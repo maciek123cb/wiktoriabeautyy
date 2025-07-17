@@ -20,6 +20,30 @@ app.use((req, res, next) => {
   next();
 });
 
+// Endpoint testowy
+app.get('/api/test', (req, res) => {
+  console.log('Endpoint testowy wywołany');
+  res.json({ success: true, message: 'API działa poprawnie!' });
+});
+
+// Endpoint testowy logowania
+app.post('/api/login-test', (req, res) => {
+  console.log('Endpoint testowy logowania wywołany');
+  console.log('Body:', req.body);
+  res.json({ 
+    success: true, 
+    message: 'Logowanie testowe pomyślne!',
+    token: 'test-token-123',
+    user: {
+      id: 1,
+      email: 'test@example.com',
+      firstName: 'Test',
+      lastName: 'User',
+      role: 'admin'
+    }
+  });
+});
+
 // Sprawdź czy folder dist istnieje
 const distPath = path.join(__dirname, 'dist');
 if (!fs.existsSync(distPath)) {
@@ -33,14 +57,23 @@ app.use('/api', createProxyMiddleware({
   target: BACKEND_URL,
   changeOrigin: true,
   pathRewrite: function (path) {
-    // Zachowujemy /api w ścieżce
-    return path;
+    // Usuwamy /api z początku ścieżki
+    const newPath = path.replace(/^\/api/, '');
+    console.log(`Przekierowuję ścieżkę: ${path} -> ${newPath}`);
+    return newPath;
   },
   onProxyReq: (proxyReq, req, res) => {
-    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path);
+    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path.replace(/^\/api/, ''));
+    console.log('Headers:', JSON.stringify(req.headers));
+    console.log('Body:', req.body);
+  },
+  onProxyRes: (proxyRes, req, res) => {
+    console.log('Proxy response:', proxyRes.statusCode, req.path);
+    console.log('Response headers:', JSON.stringify(proxyRes.headers));
   },
   onError: (err, req, res) => {
     console.error('Proxy error:', err);
+    console.error('Error stack:', err.stack);
     res.status(500).json({ error: 'Proxy error', message: err.message });
   }
 }));

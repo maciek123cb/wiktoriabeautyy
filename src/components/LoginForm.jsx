@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
-import { getApiUrl } from '../config/api'
+import { getApiUrl, testApiConnection } from '../config/api'
 
 const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
   const [formData, setFormData] = useState({
@@ -12,7 +12,23 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [loginError, setLoginError] = useState('')
+  const [apiStatus, setApiStatus] = useState(null)
 
+  // Test połączenia z API przy ładowaniu komponentu
+  useEffect(() => {
+    const testApi = async () => {
+      try {
+        const result = await testApiConnection();
+        setApiStatus(result);
+      } catch (error) {
+        console.error('Błąd testowania API:', error);
+        setApiStatus({ success: false, error: error.message });
+      }
+    };
+    
+    testApi();
+  }, []);
+  
   // Walidacja email
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -49,26 +65,47 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
     setIsLoading(true)
 
     try {
-      const response = await fetch(getApiUrl('/login'), {
+      // Spróbuj użyć endpointu testowego, jeśli normalny endpoint nie działa
+      const url = apiStatus && !apiStatus.success ? getApiUrl('/login-test') : getApiUrl('/login');
+      console.log('Wysyłam żądanie do:', url);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       })
-
-      const data = await response.json()
+      
+      console.log('Status odpowiedzi:', response.status);
+      console.log('Nagłówki odpowiedzi:', response.headers);
+      
+      const responseText = await response.text();
+      console.log('Odpowiedź serwera (text):', responseText);
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log('Odpowiedź serwera (JSON):', data);
+      } catch (jsonError) {
+        console.error('Błąd parsowania JSON:', jsonError);
+        setLoginError('Błąd parsowania odpowiedzi serwera');
+        return;
+      }
 
       if (data.success) {
         // Zapisz token w localStorage
         localStorage.setItem('authToken', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
+        console.log('Zalogowano pomyślnie, dane użytkownika:', data.user);
         onLogin(data.user)
       } else {
+        console.error('Błąd logowania:', data.message);
         setLoginError(data.message)
       }
     } catch (error) {
-      setLoginError('Błąd połączenia z serwerem')
+      console.error('Błąd połączenia z serwerem:', error);
+      setLoginError('Błąd połączenia z serwerem: ' + error.message)
     } finally {
       setIsLoading(false)
     }
@@ -116,6 +153,19 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
             animate={{ opacity: 1, x: 0 }}
           >
             {loginError}
+          </motion.div>
+        )}
+        
+        {apiStatus && (
+          <motion.div
+            className={`border px-4 py-3 rounded-lg mb-6 ${
+              apiStatus.success ? 'bg-green-50 border-green-200 text-green-600' : 'bg-yellow-50 border-yellow-200 text-yellow-600'
+            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <p className="font-medium">Status API: {apiStatus.success ? 'Działa' : 'Problem z połączeniem'}</p>
+            <p className="text-sm">{apiStatus.message || apiStatus.error}</p>
           </motion.div>
         )}
 
@@ -201,6 +251,17 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
                 Nie masz konta? Zarejestruj się
               </button>
             </div>
+            
+            <button
+              type="button"
+              onClick={async () => {
+                const result = await testApiConnection();
+                setApiStatus(result);
+              }}
+              className="w-full mt-4 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Testuj połączenie z API
+            </button>
           </div>
         </form>
 
