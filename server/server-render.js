@@ -214,6 +214,15 @@ app.post('/api/login', async (req, res) => {
 // Tutaj należy dodać pozostałe endpointy z oryginalnego pliku server.js,
 // dostosowując zapytania SQL do PostgreSQL dla środowiska produkcyjnego
 
+// Funkcja do wykonywania zapytań SQL niezależnie od typu bazy danych
+async function executeQuery(query, params = []) {
+  if (isProduction) {
+    return db.execute(query, params);
+  } else {
+    return db.execute(query, params);
+  }
+}
+
 // Inicjalizacja i uruchomienie serwera
 async function startServer() {
   try {
@@ -226,6 +235,10 @@ async function startServer() {
       
       try {
         db = await dbModule.initializeDatabase();
+        // Nadpisujemy metodę execute dla PostgreSQL
+        db.execute = async (query, params = []) => {
+          return await db.query(query, params);
+        };
         console.log('Połączenie z PostgreSQL nawiązane pomyślnie');
       } catch (dbError) {
         console.error('Błąd połączenia z PostgreSQL:', dbError);

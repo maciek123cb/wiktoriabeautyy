@@ -60,10 +60,21 @@ async function query(text, params) {
 // Funkcja do wykonywania zapytań bez zwracania wyników
 async function execute(text, params) {
   try {
-    const result = await pool.query(text, params);
+    // Dostosowanie zapytania SQL do PostgreSQL
+    let modifiedText = text;
+    
+    // Zamiana znaków zapytania na parametry numerowane dla PostgreSQL
+    if (params && params.length > 0 && text.includes('?')) {
+      let paramIndex = 1;
+      modifiedText = text.replace(/\?/g, () => `$${paramIndex++}`);
+    }
+    
+    const result = await pool.query(modifiedText, params);
     return [result.rows, result.fields];
   } catch (error) {
     console.error('Błąd wykonania PostgreSQL:', error);
+    console.error('Zapytanie:', text);
+    console.error('Parametry:', params);
     throw error;
   }
 }

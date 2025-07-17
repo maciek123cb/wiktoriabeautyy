@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "render-start": "node server-render.js",
-    "init-db": "node init-db-render.js"
+    "init-db": "node init-db-render.js",
+    "fix-db": "node fix-db-adapter.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
