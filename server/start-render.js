@@ -1,2 +1,2 @@
 // Plik startowy dla Render.com
-require('./server.js');
+require('./server-render.js');
