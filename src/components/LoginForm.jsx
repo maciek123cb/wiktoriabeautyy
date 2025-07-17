@@ -49,7 +49,7 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
     setIsLoading(true)
 
     try {
-      const response = await fetch(getApiUrl('/api/login'), {
+      const response = await fetch(getApiUrl('/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

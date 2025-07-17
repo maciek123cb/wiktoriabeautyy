@@ -16,7 +16,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('authToken')
-      const response = await fetch(getApiUrl('/api/admin/users'), {
+      const response = await fetch(getApiUrl('/admin/users'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -36,7 +36,7 @@ const UserManagement = () => {
   const toggleUserStatus = async (userId, currentStatus) => {
     try {
       const token = localStorage.getItem('authToken')
-      const response = await fetch(getApiUrl(`/api/admin/users/${userId}/activate`), {
+      const response = await fetch(getApiUrl(`/admin/users/${userId}/activate`), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -60,7 +60,7 @@ const UserManagement = () => {
 
     try {
       const token = localStorage.getItem('authToken')
-      const response = await fetch(getApiUrl(`/api/admin/users/${userId}`), {
+      const response = await fetch(getApiUrl(`/admin/users/${userId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

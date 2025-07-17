@@ -20,7 +20,7 @@ const AdminPanel = ({ user, onLogout }) => {
     const fetchAdminData = async () => {
       try {
         const token = localStorage.getItem('authToken')
-        const response = await fetch(getApiUrl('/api/admin'), {
+        const response = await fetch(getApiUrl('/admin'), {
           headers: {
             'Authorization': `Bearer ${token}`
           }

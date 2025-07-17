@@ -85,7 +85,7 @@ const RegisterForm = ({ onBack, onRegisterSuccess }) => {
     setIsLoading(true)
 
     try {
-      const response = await fetch(getApiUrl('/api/register'), {
+      const response = await fetch(getApiUrl('/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
