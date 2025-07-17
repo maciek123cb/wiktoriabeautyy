@@ -26,7 +26,7 @@ export const getApiUrl = (endpoint) => {
 // Funkcja do testowania połączenia z API
 export const testApiConnection = async () => {
   try {
-    const response = await fetch(getApiUrl('/test'));
+    const response = await fetch('/api/test');
     const data = await response.json();
     console.log('Test API connection result:', data);
     return data;

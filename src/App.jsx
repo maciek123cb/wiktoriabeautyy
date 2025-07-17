@@ -29,12 +29,7 @@ function LoginFormWrapper({ handleLogin, onRegisterSuccess }) {
     <LoginForm 
       onLogin={(userData) => {
         handleLogin(userData);
-        // Wróćmy do window.location.href, które działa bardziej niezawodnie
-        if (userData.role === 'admin') {
-          window.location.href = '/admin';
-        } else {
-          window.location.href = '/';
-        }
+        // Przekierowanie jest obsługiwane w komponencie LoginForm
       }}
       onRegisterSuccess={onRegisterSuccess}
     />

@@ -49,15 +49,7 @@ app.post('/api/login-test', (req, res) => {
   });
 });
 
-// Sprawdź czy folder dist istnieje
-const distPath = path.join(__dirname, 'dist');
-if (!fs.existsSync(distPath)) {
-  console.error('Błąd: Folder dist nie istnieje!');
-  console.log('Bieżący katalog:', __dirname);
-  console.log('Zawartość katalogu:', fs.readdirSync(__dirname));
-}
-
-// Dodajmy bezpośredni endpoint logowania
+// Bezpośredni endpoint logowania
 app.post('/api/login', (req, res) => {
   console.log('Bezpośredni endpoint logowania wywołany');
   console.log('Body:', req.body);
@@ -84,6 +76,43 @@ app.post('/api/login', (req, res) => {
   }
 });
 
+// Sprawdź czy folder dist istnieje
+const distPath = path.join(__dirname, 'dist');
+if (!fs.existsSync(distPath)) {
+  console.error('Błąd: Folder dist nie istnieje!');
+  console.log('Bieżący katalog:', __dirname);
+  console.log('Zawartość katalogu:', fs.readdirSync(__dirname));
+}
+
+// Endpoint dla /admin
+app.get('/api/admin', (req, res) => {
+  console.log('Endpoint /admin wywołany');
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ success: false, message: 'Brak tokenu autoryzacji' });
+  }
+  
+  const token = authHeader.split(' ')[1];
+  
+  // W prawdziwej aplikacji weryfikowalibyśmy token
+  if (token === 'admin-token-123') {
+    res.json({
+      success: true,
+      message: 'Witaj w panelu administratora!',
+      data: {
+        stats: {
+          users: 42,
+          appointments: 156,
+          services: 12
+        }
+      }
+    });
+  } else {
+    res.status(401).json({ success: false, message: 'Nieprawidłowy token' });
+  }
+});
+
 // Proxy dla żądań API - musi być przed static middleware
 app.use('/api', createProxyMiddleware({
   target: BACKEND_URL,
@@ -95,12 +124,12 @@ app.use('/api', createProxyMiddleware({
     }
     
     // Usuwamy /api z początku ścieżki
-    const newPath = path.replace(/^\/api/, '');
+    const newPath = path.replace(/^\\/api/, '');
     console.log(`Przekierowuję ścieżkę: ${path} -> ${newPath}`);
     return newPath;
   },
   onProxyReq: (proxyReq, req, res) => {
-    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path.replace(/^\/api/, ''));
+    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path.replace(/^\\/api/, ''));
     console.log('Headers:', JSON.stringify(req.headers));
     console.log('Body:', req.body);
   },

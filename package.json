@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp public/_redirects dist/ && cp -r images dist/",
+    "build": "vite build && cp public/_redirects dist/ && cp -r images dist/ && cp server.cjs dist/",
     "preview": "vite preview --port 3000 --host",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "server": "cd server && npm start",
-    "render-start": "node server/start-render.js"
+    "render-start": "node server/start-render.js",
+    "start-server": "node server.cjs"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "framer-motion": "^10.16.4",
     "http-proxy-middleware": "^2.0.6",

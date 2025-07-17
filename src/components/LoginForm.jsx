@@ -66,7 +66,8 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
 
     try {
       // Spróbuj użyć endpointu testowego, jeśli normalny endpoint nie działa
-      const url = apiStatus && !apiStatus.success ? getApiUrl('/login-test') : getApiUrl('/login');
+      // Używamy bezpośredniego endpointu logowania
+      const url = '/api/login';
       console.log('Wysyłam żądanie do:', url);
       
       const response = await fetch(url, {
@@ -99,6 +100,12 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
         localStorage.setItem('user', JSON.stringify(data.user))
         console.log('Zalogowano pomyślnie, dane użytkownika:', data.user);
         onLogin(data.user)
+        
+        // Przekieruj do panelu administratora, jeśli to admin
+        if (data.user.role === 'admin') {
+          console.log('Przekierowuję do panelu administratora');
+          window.location.href = '/admin';
+        }
       } else {
         console.error('Błąd logowania:', data.message);
         setLoginError(data.message)
