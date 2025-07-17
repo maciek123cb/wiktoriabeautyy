@@ -25,11 +25,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Endpoint testowy
-app.get('/api/test', (req, res) => {
-  console.log('Endpoint testowy wywołany');
-  res.json({ success: true, message: 'API działa poprawnie!' });
-});
+// Endpoint testowy - przekierowujemy do backendu
+// app.get('/api/test', (req, res) => {
+//   console.log('Endpoint testowy wywołany');
+//   res.json({ success: true, message: 'API działa poprawnie!' });
+// });
 
 // Mockowe endpointy dla brakujących zasobów
 app.get('/api/reviews', (req, res) => {
@@ -235,7 +235,7 @@ app.use('/api', createProxyMiddleware({
   changeOrigin: true,
   pathRewrite: function (path) {
     // Pomijamy endpointy, które obsługujemy lokalnie
-    if (path === '/api/login' || path === '/api/test' || path === '/api/login-test') {
+    if (path === '/api/login' || path === '/api/login-test') {
       return path;
     }
     

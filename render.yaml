@@ -22,6 +22,9 @@ services:
         fromDatabase:
           name: beauty-salon-db
           property: connectionString
+      # Dodajemy fallback dla DATABASE_URL w przypadku problemów z połączeniem
+      - key: FALLBACK_MODE
+        value: "true"
 
   # Frontend
   - type: web

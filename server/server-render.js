@@ -29,6 +29,12 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Endpoint testowy
+app.get('/api/test', (req, res) => {
+  console.log('Endpoint testowy wywołany');
+  res.json({ success: true, message: 'API działa poprawnie!' });
+});
+
 // Konfiguracja multer dla uploadów
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -232,16 +238,22 @@ async function startServer() {
       console.log('DATABASE_URL jest ustawiony:', !!process.env.DATABASE_URL);
       
       if (!process.env.DATABASE_URL) {
-        throw new Error('Brak zmiennej środowiskowej DATABASE_URL');
+        console.error('Brak zmiennej środowiskowej DATABASE_URL - sprawdź konfiguracje na Render.com');
+        console.warn('Kontynuowanie bez połączenia z bazą danych - API będzie działać w trybie awaryjnym');
+        // Nie rzucamy błędu, pozwalamy serwerowi uruchomić się bez bazy danych
       }
       
       try {
-        // Używamy naszego adaptera PostgreSQL
-        db = await dbAdapter.createPostgresAdapter(process.env.DATABASE_URL);
-        
-        // Testujemy połączenie
-        const [testResult] = await db.execute('SELECT NOW() as time');
-        console.log('Połączenie z PostgreSQL nawiązane pomyślnie, czas serwera:', testResult[0].time);
+        if (process.env.DATABASE_URL) {
+          // Używamy naszego adaptera PostgreSQL
+          db = await dbAdapter.createPostgresAdapter(process.env.DATABASE_URL);
+          
+          // Testujemy połączenie
+          const [testResult] = await db.execute('SELECT NOW() as time');
+          console.log('Połączenie z PostgreSQL nawiązane pomyślnie, czas serwera:', testResult[0].time);
+        } else {
+          console.warn('Brak połączenia z bazą danych - API działa w trybie awaryjnym');
+        }
         
         // Sprawdzamy czy tabele istnieją
         try {
@@ -399,7 +411,8 @@ async function startServer() {
         
       } catch (dbError) {
         console.error('Błąd połączenia z PostgreSQL:', dbError);
-        throw dbError;
+        console.warn('Kontynuowanie bez połączenia z bazą danych - API będzie działać w trybie awaryjnym');
+        // Nie rzucamy błędu, pozwalamy serwerowi uruchomić się bez bazy danych
       }
     } else {
       console.log('Próba połączenia z bazą danych MySQL...');

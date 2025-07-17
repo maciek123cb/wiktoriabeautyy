@@ -3,10 +3,16 @@ const { Pool } = require('pg');
 
 // Tworzy adapter bazy danych dla PostgreSQL, który emuluje interfejs MySQL
 async function createPostgresAdapter(connectionString) {
+  if (!connectionString) {
+    throw new Error('Brak connection string dla bazy danych PostgreSQL');
+  }
+  
   try {
     const pool = new Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false }
+      ssl: { rejectUnauthorized: false },
+      // Dodajemy timeout dla połączenia
+      connectionTimeoutMillis: 5000
     });
     
     // Testujemy połączenie

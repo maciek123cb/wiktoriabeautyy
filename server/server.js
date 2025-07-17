@@ -17,6 +17,12 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Endpoint testowy
+app.get('/api/test', (req, res) => {
+  console.log('Endpoint testowy wywołany');
+  res.json({ success: true, message: 'API działa poprawnie!' });
+});
+
 // Konfiguracja multer dla uploadów
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

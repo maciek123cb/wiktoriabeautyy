@@ -26,13 +26,20 @@ export const getApiUrl = (endpoint) => {
 // Funkcja do testowania połączenia z API
 export const testApiConnection = async () => {
   try {
-    const response = await fetch('/api/test');
+    console.log('Testowanie połączenia z API...');
+    // Dodajemy timeout do fetch aby nie czekać zbyt długo
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch('/api/test', {
+      signal: controller.signal
+    }).finally(() => clearTimeout(timeoutId));
     
     // Jeśli status nie jest ok, zwróć dane testowe
     if (!response.ok) {
       console.log('Test API response not OK, using test data');
       return { 
-        success: true, 
+        success: false, 
         message: 'API działa w trybie awaryjnym',
         mode: 'fallback'
       };
@@ -45,7 +52,7 @@ export const testApiConnection = async () => {
     } catch (jsonError) {
       console.error('Test API JSON parse error:', jsonError);
       return { 
-        success: true, 
+        success: false, 
         message: 'API działa w trybie awaryjnym',
         mode: 'fallback'
       };
@@ -53,7 +60,7 @@ export const testApiConnection = async () => {
   } catch (error) {
     console.error('Test API connection error:', error);
     return { 
-      success: true, 
+      success: false, 
       message: 'API działa w trybie awaryjnym',
       mode: 'fallback',
       error: error.message 
