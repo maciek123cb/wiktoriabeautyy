@@ -14,7 +14,7 @@ const Testimonials = ({ user }) => {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch(getApiUrl('/api/reviews?limit=3'))
+      const response = await fetch(getApiUrl('/reviews?limit=3'))
       const data = await response.json()
       setReviews(data.reviews || [])
     } catch (error) {

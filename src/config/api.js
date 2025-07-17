@@ -4,7 +4,9 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001';
 
 export const getApiUrl = (endpoint) => {
-  return `${API_URL}${endpoint}`;
+  // Upewnij się, że endpoint zaczyna się od /
+  const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${API_URL}${formattedEndpoint}`;
 };
 
 export default {

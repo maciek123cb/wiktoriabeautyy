@@ -14,7 +14,7 @@ const Blog = () => {
 
   const fetchLatestArticles = async () => {
     try {
-      const response = await fetch(getApiUrl('/api/articles?limit=3'))
+      const response = await fetch(getApiUrl('/articles?limit=3'))
       const data = await response.json()
       console.log('Pobrane artykuły:', data)
       setArticles(data.articles || [])

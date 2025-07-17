@@ -13,7 +13,7 @@ const MetamorphosisGallery = ({ limit = 3 }) => {
 
   const fetchMetamorphoses = async () => {
     try {
-      const response = await fetch(getApiUrl(`/api/metamorphoses?limit=${limit}`));
+      const response = await fetch(getApiUrl(`/metamorphoses?limit=${limit}`));
       const data = await response.json();
       setMetamorphoses(data.metamorphoses || []);
     } catch (error) {

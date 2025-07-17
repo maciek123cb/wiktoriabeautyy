@@ -9,6 +9,17 @@ const PORT = process.env.PORT || 3000;
 // Adres backendu
 const BACKEND_URL = process.env.BACKEND_URL || 'https://wiktoria-beauty-backend.onrender.com';
 
+// Obsługa CORS - musi być przed wszystkimi innymi middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+    return res.status(200).json({});
+  }
+  next();
+});
+
 // Sprawdź czy folder dist istnieje
 const distPath = path.join(__dirname, 'dist');
 if (!fs.existsSync(distPath)) {
@@ -17,7 +28,7 @@ if (!fs.existsSync(distPath)) {
   console.log('Zawartość katalogu:', fs.readdirSync(__dirname));
 }
 
-// Proxy dla żądań API
+// Proxy dla żądań API - musi być przed static middleware
 app.use('/api', createProxyMiddleware({
   target: BACKEND_URL,
   changeOrigin: true,
@@ -36,16 +47,23 @@ app.use('/api', createProxyMiddleware({
 // Serwuj pliki statyczne z folderu dist
 app.use(express.static(distPath));
 
-// Obsługa CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-    return res.status(200).json({});
+// Sprawdź czy folder images istnieje w dist, jeśli nie, skopiuj go
+const imagesPath = path.join(distPath, 'images');
+if (!fs.existsSync(imagesPath) && fs.existsSync(path.join(__dirname, 'images'))) {
+  try {
+    fs.mkdirSync(imagesPath, { recursive: true });
+    const imageFiles = fs.readdirSync(path.join(__dirname, 'images'));
+    for (const file of imageFiles) {
+      fs.copyFileSync(
+        path.join(__dirname, 'images', file),
+        path.join(imagesPath, file)
+      );
+    }
+    console.log(`Skopiowano ${imageFiles.length} plików obrazów do folderu dist/images`);
+  } catch (error) {
+    console.error('Błąd kopiowania obrazów:', error);
   }
-  next();
-});
+}
 
 // Wszystkie pozostałe żądania przekieruj do index.html
 app.get('*', (req, res) => {
