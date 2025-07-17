@@ -32,6 +32,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: BACKEND_URL
+        value: https://wiktoria-beauty-backend.onrender.com
     headers:
       - path: /*
         name: Cache-Control

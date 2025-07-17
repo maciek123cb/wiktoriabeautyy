@@ -1,6 +1,6 @@
 // Configuration for API endpoints
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://wiktoriabeautyy.onrender.com' // Adres backendu na Render.com
+  ? '/api' // Używamy względnej ścieżki w produkcji
   : 'http://localhost:3001';
 
 export const getApiUrl = (endpoint) => {

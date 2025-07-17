@@ -2,8 +2,12 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Adres backendu
+const BACKEND_URL = process.env.BACKEND_URL || 'https://wiktoria-beauty-backend.onrender.com';
 
 // Sprawdź czy folder dist istnieje
 const distPath = path.join(__dirname, 'dist');
@@ -12,6 +16,22 @@ if (!fs.existsSync(distPath)) {
   console.log('Bieżący katalog:', __dirname);
   console.log('Zawartość katalogu:', fs.readdirSync(__dirname));
 }
+
+// Proxy dla żądań API
+app.use('/api', createProxyMiddleware({
+  target: BACKEND_URL,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api': '' // Usuwamy /api z początku ścieżki
+  },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path.replace(/^\/api/, ''));
+  },
+  onError: (err, req, res) => {
+    console.error('Proxy error:', err);
+    res.status(500).json({ error: 'Proxy error', message: err.message });
+  }
+}));
 
 // Serwuj pliki statyczne z folderu dist
 app.use(express.static(distPath));
@@ -36,4 +56,5 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Serwer uruchomiony na porcie ${PORT}`);
   console.log(`Serwowanie plików z: ${distPath}`);
+  console.log(`Proxy dla API: ${BACKEND_URL}`);
 });
