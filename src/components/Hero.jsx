@@ -6,7 +6,7 @@ const Hero = ({ onBookAppointment }) => {
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/images/poczujsiepieknie.png)' }}
+        style={{ backgroundImage: 'url(./images/poczujsiepieknie.png)' }}
       />
       <div className="absolute inset-0 bg-black/40" />
       <div className="absolute inset-0 bg-gradient-to-br from-pink-50/30 to-purple-50/30" />

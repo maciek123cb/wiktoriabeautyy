@@ -32,11 +32,12 @@ if (!fs.existsSync(distPath)) {
 app.use('/api', createProxyMiddleware({
   target: BACKEND_URL,
   changeOrigin: true,
-  pathRewrite: {
-    '^/api': '' // Usuwamy /api z początku ścieżki
+  pathRewrite: function (path) {
+    // Zachowujemy /api w ścieżce
+    return path;
   },
   onProxyReq: (proxyReq, req, res) => {
-    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path.replace(/^\/api/, ''));
+    console.log('Proxy request:', req.method, req.path, '->', BACKEND_URL + req.path);
   },
   onError: (err, req, res) => {
     console.error('Proxy error:', err);

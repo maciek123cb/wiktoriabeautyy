@@ -6,25 +6,25 @@ const Services = ({ onViewAllServices }) => {
       icon: '✨',
       title: 'Oczyszczanie twarzy',
       description: 'Głębokie oczyszczanie i detoksykacja skóry',
-      image: '/images/oczyszczanietwarzy.png'
+      image: './images/oczyszczanietwarzy.png'
     },
     {
       icon: '💆',
       title: 'Mezoterapia',
       description: 'Odmładzanie i nawilżanie skóry',
-      image: '/images/mezoterapia.png'
+      image: './images/mezoterapia.png'
     },
     {
       icon: '🌟',
       title: 'Peeling chemiczny',
       description: 'Wygładzanie i rozjaśnianie skóry',
-      image: '/images/peeling.png'
+      image: './images/peeling.png'
     },
     {
       icon: '🦶',
       title: 'Podologia',
       description: 'Profesjonalna pielęgnacja stóp',
-      image: '/images/pedicure.png'
+      image: './images/pedicure.png'
     }
   ]
 

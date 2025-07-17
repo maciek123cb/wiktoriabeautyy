@@ -21,7 +21,7 @@ const AdminCalendar = () => {
 
   const fetchDatesWithSlots = async () => {
     try {
-      const response = await fetch(getApiUrl('/api/available-dates'))
+      const response = await fetch(getApiUrl('/available-dates'))
       const data = await response.json()
       setDatesWithSlots(data.dates || [])
     } catch (error) {
@@ -41,7 +41,7 @@ const AdminCalendar = () => {
       const dateStr = `${year}-${month}-${day}`
       
       const token = localStorage.getItem('authToken')
-      const response = await fetch(getApiUrl(`/api/admin/slots/${dateStr}`), {
+      const response = await fetch(getApiUrl(`/admin/slots/${dateStr}`), {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -65,7 +65,7 @@ const AdminCalendar = () => {
       const dateStr = `${year}-${month}-${day}`
       console.log('Dodaję slot:', { date: dateStr, time: newTime })
       
-      const response = await fetch(getApiUrl('/api/admin/slots'), {
+      const response = await fetch(getApiUrl('/admin/slots'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -102,7 +102,7 @@ const AdminCalendar = () => {
       const day = String(selectedDate.getDate()).padStart(2, '0')
       const dateStr = `${year}-${month}-${day}`
       
-      const response = await fetch(getApiUrl(`/api/admin/slots/${dateStr}/${time}`), {
+      const response = await fetch(getApiUrl(`/admin/slots/${dateStr}/${time}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
