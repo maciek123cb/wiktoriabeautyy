@@ -133,7 +133,8 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
         // Przekieruj do panelu administratora, jeśli to admin
         if (data.user.role === 'admin') {
           console.log('Przekierowuję do panelu administratora');
-          window.location.href = '/admin';
+          // Użyj względnej ścieżki
+          window.location.href = './admin';
         }
       } else {
         console.error('Błąd logowania:', data.message);

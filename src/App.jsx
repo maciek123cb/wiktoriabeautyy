@@ -131,7 +131,8 @@ function App() {
     if (userData.role === 'admin') {
       console.log('Przekierowuję do panelu administratora')
       setTimeout(() => {
-        window.location.href = '/admin'
+        // Użyj względnej ścieżki
+        window.location.href = './admin'
       }, 500)
     }
   }

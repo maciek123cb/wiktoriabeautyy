@@ -3,6 +3,8 @@
   "clean_urls": true,
   "routes": {
     "/api/**": "server.cjs",
+    "/admin": "index.html",
+    "/admin/**": "index.html",
     "/**": "index.html"
   },
   "proxies": {
