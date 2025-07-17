@@ -20,7 +20,7 @@ Po utworzeniu bazy danych, Render.com wyświetli dane dostępowe. Użyj ich do s
 2. Wybierz zakładkę "Environment"
 3. Dodaj następujące zmienne środowiskowe:
    - `DATABASE_URL`: wartość z pola "External Database URL" z ustawień bazy danych
-   - `JWT_SECRET`: bezpieczny ciąg znaków do generowania tokenów JWT
+   - `JWT_SECRET`: długi, losowy ciąg znaków (np. `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0`) lub użyj opcji `generateValue: true` w render.yaml
    - `NODE_ENV`: production
 
 ## 3. Wdrożenie aplikacji
@@ -43,7 +43,7 @@ Po utworzeniu bazy danych, Render.com wyświetli dane dostępowe. Użyj ich do s
          - key: NODE_ENV
            value: production
          - key: JWT_SECRET
-           sync: false
+           generateValue: true
          - key: DATABASE_URL
            fromDatabase:
              name: beauty-salon-db

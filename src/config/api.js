@@ -1,6 +1,6 @@
 // Configuration for API endpoints
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? '' // Empty string for relative URLs in production (same domain)
+  ? 'https://wiktoriabeautyy.onrender.com' // Adres backendu na Render.com
   : 'http://localhost:3001';
 
 export const getApiUrl = (endpoint) => {

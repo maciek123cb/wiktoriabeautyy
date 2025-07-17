@@ -18,10 +18,26 @@ async function initializeDatabase() {
     console.log('Połączono z bazą danych PostgreSQL');
     
     // Wczytaj i wykonaj skrypt inicjalizacyjny
-    const initScript = fs.readFileSync(path.join(__dirname, 'init-postgres.sql'), 'utf8');
-    await client.query(initScript);
+    try {
+      const initScript = fs.readFileSync(path.join(__dirname, 'init-postgres.sql'), 'utf8');
+      // Wykonaj każde zapytanie osobno
+      const queries = initScript.split(';').filter(query => query.trim().length > 0);
+      
+      for (const query of queries) {
+        try {
+          await client.query(query);
+          console.log('Wykonano zapytanie SQL');
+        } catch (queryError) {
+          console.error('Błąd wykonania zapytania:', queryError.message);
+          console.error('Problematyczne zapytanie:', query);
+        }
+      }
+      
+      console.log('Baza danych PostgreSQL została zainicjalizowana');
+    } catch (scriptError) {
+      console.error('Błąd wczytywania skryptu SQL:', scriptError);
+    }
     
-    console.log('Baza danych PostgreSQL została zainicjalizowana');
     client.release();
     return pool;
   } catch (error) {

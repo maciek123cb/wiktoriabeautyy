@@ -217,13 +217,24 @@ app.post('/api/login', async (req, res) => {
 // Inicjalizacja i uruchomienie serwera
 async function startServer() {
   try {
+    console.log('Uruchamianie serwera w środowisku:', isProduction ? 'produkcyjnym' : 'rozwojowym');
+    
     // Inicjalizacja bazy danych
     if (isProduction) {
-      db = await dbModule.initializeDatabase();
-      // W przypadku PostgreSQL, db to obiekt z metodami query i execute
+      console.log('Próba połączenia z bazą danych PostgreSQL...');
+      console.log('DATABASE_URL jest ustawiony:', !!process.env.DATABASE_URL);
+      
+      try {
+        db = await dbModule.initializeDatabase();
+        console.log('Połączenie z PostgreSQL nawiązane pomyślnie');
+      } catch (dbError) {
+        console.error('Błąd połączenia z PostgreSQL:', dbError);
+        throw dbError;
+      }
     } else {
+      console.log('Próba połączenia z bazą danych MySQL...');
       db = await dbModule.initializeDatabase();
-      // W przypadku MySQL, db to połączenie z bazą danych
+      console.log('Połączenie z MySQL nawiązane pomyślnie');
     }
     
     const server = app.listen(PORT, () => {
