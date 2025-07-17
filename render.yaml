@@ -28,7 +28,11 @@ services:
     name: wiktoria-beauty-frontend
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npm run preview
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache

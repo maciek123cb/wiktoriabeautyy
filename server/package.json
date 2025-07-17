@@ -9,7 +9,8 @@
     "render-start": "node server-render.js",
     "init-db": "node init-db-render.js",
     "fix-db": "node fix-db-adapter.js",
-    "restart": "touch server-render.js && node server-render.js"
+    "restart": "touch server-render.js && node server-render.js",
+    "spa-fix": "echo '/* /index.html 200' > ../dist/_redirects"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

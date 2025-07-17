@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "build": "vite build && echo '/* /index.html 200' > dist/_redirects",
+    "preview": "vite preview --port 3000 --host",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "server": "cd server && npm start",
     "render-start": "node server/start-render.js"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.294.0",
     "quill": "^2.0.3",
