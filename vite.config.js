@@ -3,18 +3,27 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import fs from 'fs'
 
-// Funkcja do generowania pliku _redirects podczas budowania
-const generateRedirects = () => ({
-  name: 'generate-redirects',
+// Funkcja do kopiowania pliku _redirects podczas budowania
+const copyRedirects = () => ({
+  name: 'copy-redirects',
   closeBundle() {
-    const redirectsContent = '/* /index.html 200'
-    fs.writeFileSync(resolve(__dirname, 'dist/_redirects'), redirectsContent)
-    console.log('\n\u001b[32m✔ _redirects file generated\u001b[0m')
+    try {
+      if (fs.existsSync('public/_redirects')) {
+        fs.copyFileSync('public/_redirects', 'dist/_redirects')
+        console.log('\n\u001b[32m✔ _redirects file copied\u001b[0m')
+      } else {
+        const redirectsContent = '/* /index.html 200'
+        fs.writeFileSync('dist/_redirects', redirectsContent)
+        console.log('\n\u001b[32m✔ _redirects file generated\u001b[0m')
+      }
+    } catch (error) {
+      console.error('\n\u001b[31m✘ Error with _redirects file:', error, '\u001b[0m')
+    }
   }
 })
 
 export default defineConfig({
-  plugins: [react(), generateRedirects()],
+  plugins: [react(), copyRedirects()],
   server: {
     host: '0.0.0.0',
     port: 3000,
@@ -33,5 +42,13 @@ export default defineConfig({
         next()
       }
     ]
+  },
+  build: {
+    // Dodajemy opcję rollupOptions, aby zachować nazwy plików
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 })

@@ -11,7 +11,6 @@ import ReviewManagement from '../components/ReviewManagement'
 import MetamorphosisManagement from '../components/MetamorphosisManagement'
 
 const AdminPanel = ({ user, onLogout }) => {
-  const navigate = useNavigate();
   const [adminData, setAdminData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -49,7 +48,7 @@ const AdminPanel = ({ user, onLogout }) => {
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
     onLogout()
-    navigate('/')
+    window.location.href = '/'
   }
 
   if (loading) {

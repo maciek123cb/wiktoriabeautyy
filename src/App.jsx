@@ -24,23 +24,22 @@ import BookingForm from './components/BookingForm'
 import ClientPanel from './components/ClientPanel'
 
 // Komponent opakowujący dla LoginForm, który używa useNavigate
-const LoginFormWrapper = ({ handleLogin, onRegisterSuccess }) => {
-  const navigate = useNavigate();
-  
+function LoginFormWrapper({ handleLogin, onRegisterSuccess }) {
   return (
     <LoginForm 
       onLogin={(userData) => {
         handleLogin(userData);
+        // Wróćmy do window.location.href, które działa bardziej niezawodnie
         if (userData.role === 'admin') {
-          navigate('/admin');
+          window.location.href = '/admin';
         } else {
-          navigate('/');
+          window.location.href = '/';
         }
       }}
       onRegisterSuccess={onRegisterSuccess}
     />
   );
-};
+}
 
 // Komponent strony głównej
 const HomePage = ({ user, onBookingClick, showBookingForm, setShowBookingForm, handleBookingSuccess, showClientPanel, setShowClientPanel, handleCloseClientPanel }) => {
@@ -65,7 +64,7 @@ const HomePage = ({ user, onBookingClick, showBookingForm, setShowBookingForm, h
         onLogout={() => {
           localStorage.removeItem('authToken')
           localStorage.removeItem('user')
-          navigate('/')
+          window.location.href = '/'
         }}
         onAdminClick={() => navigate('/admin')}
         onClientPanelClick={() => setShowClientPanel(true)}

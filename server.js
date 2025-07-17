@@ -1,17 +1,39 @@
 // Prosty serwer Express do obsługi aplikacji SPA na Render.com
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Sprawdź czy folder dist istnieje
+const distPath = path.join(__dirname, 'dist');
+if (!fs.existsSync(distPath)) {
+  console.error('Błąd: Folder dist nie istnieje!');
+  console.log('Bieżący katalog:', __dirname);
+  console.log('Zawartość katalogu:', fs.readdirSync(__dirname));
+}
+
 // Serwuj pliki statyczne z folderu dist
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(distPath));
+
+// Obsługa CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+    return res.status(200).json({});
+  }
+  next();
+});
 
 // Wszystkie pozostałe żądania przekieruj do index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  console.log('Przekierowanie żądania:', req.path, 'do index.html');
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
   console.log(`Serwer uruchomiony na porcie ${PORT}`);
+  console.log(`Serwowanie plików z: ${distPath}`);
 });
