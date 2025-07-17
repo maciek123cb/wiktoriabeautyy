@@ -124,7 +124,16 @@ function App() {
   }, [])
 
   const handleLogin = (userData) => {
+    console.log('Zalogowano użytkownika:', userData)
     setUser(userData)
+    
+    // Jeśli to admin, przekieruj do panelu administratora
+    if (userData.role === 'admin') {
+      console.log('Przekierowuję do panelu administratora')
+      setTimeout(() => {
+        window.location.href = '/admin'
+      }, 500)
+    }
   }
 
   const handleRegisterSuccess = (successMessage) => {

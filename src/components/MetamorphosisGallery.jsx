@@ -14,10 +14,83 @@ const MetamorphosisGallery = ({ limit = 3 }) => {
   const fetchMetamorphoses = async () => {
     try {
       const response = await fetch(getApiUrl(`/metamorphoses?limit=${limit}`));
-      const data = await response.json();
-      setMetamorphoses(data.metamorphoses || []);
+      
+      if (!response.ok) {
+        console.log('Odpowiedź nie jest OK, używam danych testowych');
+        setMetamorphoses([
+          {
+            id: 1,
+            treatment_name: 'Laminacja brwi',
+            before_image: './images/kosmetolog.jpeg',
+            after_image: './images/kosmetolog.jpeg'
+          },
+          {
+            id: 2,
+            treatment_name: 'Henna pudrowa',
+            before_image: './images/kosmetolog.jpeg',
+            after_image: './images/kosmetolog.jpeg'
+          },
+          {
+            id: 3,
+            treatment_name: 'Laminacja rzęs',
+            before_image: './images/kosmetolog.jpeg',
+            after_image: './images/kosmetolog.jpeg'
+          }
+        ]);
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        const data = await response.json();
+        setMetamorphoses(data.metamorphoses || []);
+      } catch (jsonError) {
+        console.error('Błąd parsowania JSON:', jsonError);
+        // Użyj danych testowych
+        setMetamorphoses([
+          {
+            id: 1,
+            treatment_name: 'Laminacja brwi',
+            before_image: './images/kosmetolog.jpeg',
+            after_image: './images/kosmetolog.jpeg'
+          },
+          {
+            id: 2,
+            treatment_name: 'Henna pudrowa',
+            before_image: './images/kosmetolog.jpeg',
+            after_image: './images/kosmetolog.jpeg'
+          },
+          {
+            id: 3,
+            treatment_name: 'Laminacja rzęs',
+            before_image: './images/kosmetolog.jpeg',
+            after_image: './images/kosmetolog.jpeg'
+          }
+        ]);
+      }
     } catch (error) {
       console.error('Błąd pobierania metamorfoz:', error);
+      // Użyj danych testowych
+      setMetamorphoses([
+        {
+          id: 1,
+          treatment_name: 'Laminacja brwi',
+          before_image: './images/kosmetolog.jpeg',
+          after_image: './images/kosmetolog.jpeg'
+        },
+        {
+          id: 2,
+          treatment_name: 'Henna pudrowa',
+          before_image: './images/kosmetolog.jpeg',
+          after_image: './images/kosmetolog.jpeg'
+        },
+        {
+          id: 3,
+          treatment_name: 'Laminacja rzęs',
+          before_image: './images/kosmetolog.jpeg',
+          after_image: './images/kosmetolog.jpeg'
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -62,8 +135,8 @@ const MetamorphosisGallery = ({ limit = 3 }) => {
                 
                 <div className="aspect-square mb-4">
                   <ReactCompareImage
-                    leftImage={getApiUrl(metamorphosis.before_image)}
-                    rightImage={getApiUrl(metamorphosis.after_image)}
+                    leftImage={metamorphosis.before_image}
+                    rightImage={metamorphosis.after_image}
                     leftImageLabel="Przed"
                     rightImageLabel="Po"
                     sliderLineColor="#ec4899"

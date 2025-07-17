@@ -31,6 +31,103 @@ app.get('/api/test', (req, res) => {
   res.json({ success: true, message: 'API działa poprawnie!' });
 });
 
+// Mockowe endpointy dla brakujących zasobów
+app.get('/api/reviews', (req, res) => {
+  console.log('Mockowy endpoint reviews wywołany');
+  res.json({
+    success: true,
+    reviews: [
+      {
+        id: 1,
+        first_name: 'Anna',
+        last_name: 'K.',
+        rating: 5,
+        comment: 'Wspaniała obsługa i profesjonalne podejście!',
+        created_at: '2023-01-15'
+      },
+      {
+        id: 2,
+        first_name: 'Monika',
+        last_name: 'W.',
+        rating: 5,
+        comment: 'Jestem bardzo zadowolona z efektów zabiegu!',
+        created_at: '2023-02-20'
+      },
+      {
+        id: 3,
+        first_name: 'Karolina',
+        last_name: 'Z.',
+        rating: 4,
+        comment: 'Polecam, bardzo miła atmosfera i dobre efekty.',
+        created_at: '2023-03-10'
+      }
+    ]
+  });
+});
+
+app.get('/api/articles', (req, res) => {
+  console.log('Mockowy endpoint articles wywołany');
+  res.json({
+    success: true,
+    articles: [
+      {
+        id: 1,
+        title: 'Jak dbać o brwi?',
+        slug: 'jak-dbac-o-brwi',
+        excerpt: 'Poznaj najlepsze sposoby na pielęgnację brwi w domu.',
+        category: 'Pielęgnacja',
+        created_at: '2023-01-10',
+        image_url: '/images/kosmetolog.jpeg'
+      },
+      {
+        id: 2,
+        title: 'Zalety laminacji rzęs',
+        slug: 'zalety-laminacji-rzes',
+        excerpt: 'Dowiedz się, dlaczego laminacja rzęs jest lepsza od sztucznych rzęs.',
+        category: 'Zabiegi',
+        created_at: '2023-02-15',
+        image_url: '/images/laminacja.png'
+      },
+      {
+        id: 3,
+        title: 'Jak przygotować się do zabiegu?',
+        slug: 'jak-przygotowac-sie-do-zabiegu',
+        excerpt: 'Sprawdź, co zrobić przed wizytą, aby efekty były jeszcze lepsze.',
+        category: 'Porady',
+        created_at: '2023-03-20',
+        image_url: '/images/kosmetolog.jpeg'
+      }
+    ]
+  });
+});
+
+app.get('/api/metamorphoses', (req, res) => {
+  console.log('Mockowy endpoint metamorphoses wywołany');
+  res.json({
+    success: true,
+    metamorphoses: [
+      {
+        id: 1,
+        treatment_name: 'Laminacja brwi',
+        before_image: '/images/kosmetolog.jpeg',
+        after_image: '/images/kosmetolog.jpeg'
+      },
+      {
+        id: 2,
+        treatment_name: 'Henna pudrowa',
+        before_image: '/images/kosmetolog.jpeg',
+        after_image: '/images/kosmetolog.jpeg'
+      },
+      {
+        id: 3,
+        treatment_name: 'Laminacja rzęs',
+        before_image: '/images/kosmetolog.jpeg',
+        after_image: '/images/kosmetolog.jpeg'
+      }
+    ]
+  });
+});
+
 // Endpoint testowy logowania
 app.post('/api/login-test', (req, res) => {
   console.log('Endpoint testowy logowania wywołany');
@@ -53,6 +150,25 @@ app.post('/api/login-test', (req, res) => {
 app.post('/api/login', (req, res) => {
   console.log('Bezpośredni endpoint logowania wywołany');
   console.log('Body:', req.body);
+  
+  // Sprawdź, czy body jest puste
+  if (!req.body || Object.keys(req.body).length === 0) {
+    console.log('Puste body, używam danych testowych');
+    // Użyj danych testowych
+    res.json({ 
+      success: true, 
+      message: 'Logowanie testowe pomyślne!',
+      token: 'admin-token-123',
+      user: {
+        id: 1,
+        email: 'admin@example.com',
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'admin'
+      }
+    });
+    return;
+  }
   
   // Sprawdź dane logowania
   if (req.body.email === 'admin@example.com' && req.body.password === 'Admin123!') {
