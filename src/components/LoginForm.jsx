@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { getApiUrl, testApiConnection } from '../config/api'
 
 const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -133,8 +135,8 @@ const LoginForm = ({ onLogin, onBack, onRegisterClick }) => {
         // Przekieruj do panelu administratora, jeśli to admin
         if (data.user.role === 'admin') {
           console.log('Przekierowuję do panelu administratora');
-          // Użyj względnej ścieżki
-          window.location.href = './admin';
+          // Użyj React Router do nawigacji
+          navigate('/admin');
         }
       } else {
         console.error('Błąd logowania:', data.message);

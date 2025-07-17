@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp public/_redirects dist/ && cp -r images dist/ && cp server.cjs dist/",
+    "build": "vite build && cp public/_redirects dist/ && cp -r images dist/ && cp server.cjs dist/ && echo '/* /index.html 200' > dist/_redirects",
     "preview": "vite preview --port 3000 --host",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "server": "cd server && npm start",

@@ -127,14 +127,7 @@ function App() {
     console.log('Zalogowano użytkownika:', userData)
     setUser(userData)
     
-    // Jeśli to admin, przekieruj do panelu administratora
-    if (userData.role === 'admin') {
-      console.log('Przekierowuję do panelu administratora')
-      setTimeout(() => {
-        // Użyj względnej ścieżki
-        window.location.href = './admin'
-      }, 500)
-    }
+    // Przekierowanie jest obsługiwane w komponencie LoginForm
   }
 
   const handleRegisterSuccess = (successMessage) => {

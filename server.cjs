@@ -281,14 +281,13 @@ if (!fs.existsSync(imagesPath) && fs.existsSync(path.join(__dirname, 'images')))
   }
 }
 
-// Obsługa ścieżki /admin
-app.get('/admin', (req, res) => {
-  console.log('Przekierowanie żądania /admin do index.html');
-  res.sendFile(path.join(distPath, 'index.html'));
-});
-
-// Wszystkie pozostałe żądania przekieruj do index.html
-app.get('*', (req, res) => {
+// Wszystkie żądania do ścieżek, które nie są plikami, przekieruj do index.html
+app.get('*', (req, res, next) => {
+  // Jeśli żądanie zawiera kropkę, prawdopodobnie jest to plik
+  if (req.path.includes('.')) {
+    return next();
+  }
+  
   console.log('Przekierowanie żądania:', req.path, 'do index.html');
   res.sendFile(path.join(distPath, 'index.html'));
 });
