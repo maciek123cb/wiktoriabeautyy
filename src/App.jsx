@@ -23,6 +23,25 @@ import BookingPage from './pages/BookingPage'
 import BookingForm from './components/BookingForm'
 import ClientPanel from './components/ClientPanel'
 
+// Komponent opakowujący dla LoginForm, który używa useNavigate
+const LoginFormWrapper = ({ handleLogin, onRegisterSuccess }) => {
+  const navigate = useNavigate();
+  
+  return (
+    <LoginForm 
+      onLogin={(userData) => {
+        handleLogin(userData);
+        if (userData.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      }}
+      onRegisterSuccess={onRegisterSuccess}
+    />
+  );
+};
+
 // Komponent strony głównej
 const HomePage = ({ user, onBookingClick, showBookingForm, setShowBookingForm, handleBookingSuccess, showClientPanel, setShowClientPanel, handleCloseClientPanel }) => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -46,7 +65,7 @@ const HomePage = ({ user, onBookingClick, showBookingForm, setShowBookingForm, h
         onLogout={() => {
           localStorage.removeItem('authToken')
           localStorage.removeItem('user')
-          window.location.href = '/'
+          navigate('/')
         }}
         onAdminClick={() => navigate('/admin')}
         onClientPanelClick={() => setShowClientPanel(true)}
@@ -123,7 +142,8 @@ function App() {
     if (user && user.role === 'user') {
       setShowBookingForm(true)
     } else {
-      window.location.href = '/booking'
+      // Przekierowanie będzie obsługiwane przez komponent HomePage
+      // który ma dostęp do navigate
     }
   }
 
@@ -138,7 +158,10 @@ function App() {
     setMessage(successMessage)
     setTimeout(() => setMessage(''), 5000)
     if (showClientPanel) {
-      window.location.reload()
+      // Zamiast pełnego odświeżania strony, po prostu zamykamy panel klienta
+      // i ponownie go otwieramy, aby odświeżyć dane
+      setShowClientPanel(false)
+      setTimeout(() => setShowClientPanel(true), 100)
     }
   }
 
@@ -150,7 +173,8 @@ function App() {
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
     setUser(null)
-    window.location.href = '/'
+    // Nie używamy window.location.href, ponieważ powoduje to pełne przeładowanie strony
+    // Przekierowanie jest obsługiwane przez komponent HomePage
   }
 
   return (
@@ -183,16 +207,9 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/login" element={
-          <LoginForm 
-            onLogin={(userData) => {
-              handleLogin(userData)
-              if (userData.role === 'admin') {
-                window.location.href = '/admin'
-              } else {
-                window.location.href = '/'
-              }
-            }}
-            onRegisterSuccess={handleRegisterSuccess}
+          <LoginFormWrapper 
+            handleLogin={handleLogin} 
+            onRegisterSuccess={handleRegisterSuccess} 
           />
         } />
         <Route path="/register" element={
